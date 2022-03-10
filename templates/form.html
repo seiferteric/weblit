@@ -1,0 +1,8 @@
+<h1>{{ fname.capitalize() }}</h1>
+<form method="post">
+{% for name,param in sig.parameters.items(): %}
+<label for="{{ name }}">{{ name.capitalize() }}</label>
+<input type="{{ helpers.type(param.annotation) }}" name="{{ name }}" value="{{ param.default }}">
+{% endfor %}
+<input type="submit" value="Submit"></form>
+</form>
