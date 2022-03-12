@@ -6,6 +6,7 @@
  - Wrapper around flask
 
 
+## Example:
 
     from enum import Enum
     from weblit import Weblit
