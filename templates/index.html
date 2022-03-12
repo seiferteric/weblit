@@ -1,0 +1,8 @@
+{% extends "page.html" %}
+{% block title %}{{app.name}}{% endblock %}
+{% block body %}
+<h1>{{ app.name }}</h1>
+{% for f in app.forms %}
+<a href="/{{f}}">{{f}}</a>
+{% endfor %}
+{% endblock %}

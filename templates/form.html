@@ -1,8 +1,27 @@
+{% extends "page.html" %}
+{% block body %}
 <h1>{{ fname.capitalize() }}</h1>
 <form method="post">
 {% for name,param in sig.parameters.items(): %}
-<label for="{{ name }}">{{ name.capitalize() }}</label>
-<input type="{{ helpers.type(param.annotation) }}" name="{{ name }}" value="{{ param.default }}">
+<label for="{{ name }}">{{ name.capitalize() }}:</label>
+{% if helpers.type(param) == "radio" %}
+<br>
+{% for v in param.annotation %}
+{{radio(param, v.name, v.name == param.default.name)}}
+{% endfor %}
+{% else %}
+<input type="{{ helpers.type(param) }}" name="{{ name }}" value="{{ helpers.default(param) }}">
+{% endif %}
 {% endfor %}
 <input type="submit" value="Submit"></form>
 </form>
+{% if result is defined %}
+<p>Result: {{ result }}</p>
+{% endif %}
+{% endblock %}
+
+
+{% macro radio(param, value, checked) -%}
+    <input type="radio" id="{{value}}" name="{{value}}" value="{{value}}" {{'checked' if checked else ''}}>
+    <label for="html">{{value}}</label><br>
+{%- endmacro %}
