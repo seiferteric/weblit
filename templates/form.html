@@ -4,19 +4,19 @@
 <form method="post">
 {% for name,param in sig.parameters.items(): %}
 <label for="{{ name }}">{{ name.capitalize() }}:</label>
-{% if helpers.type(param) == "radio" %}
+{% if helpers.type(param, param_format) == "radio" %}
 <br>
 {% for v in param.annotation %}
 {{radio(param, v.name, v.name == param.default.name)}}
 {% endfor %}
-{% elif helpers.type(param) == "select" %}
+{% elif helpers.type(param, param_format) == "select" %}
 <select name="{{param.name}}" id="{{param.name}}">
 {% for v in param.annotation %}
 {{select(param, v.name)}}
 {% endfor %}
 </select>
 {% else %}
-<input type="{{ helpers.type(param) }}" name="{{ name }}" value="{{ helpers.default(param) }}">
+<input type="{{ helpers.type(param, param_format) }}" name="{{ name }}" value="{{ helpers.default(param) }}">
 {% endif %}
 {% endfor %}
 <input type="submit" value="Submit"></form>
