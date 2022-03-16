@@ -2,7 +2,7 @@ import functools
 import inspect
 from enum import Enum
 from flask import Flask, request, render_template
-
+import typing as t
 from pprint import pformat
 
 
@@ -16,20 +16,37 @@ class Weblit(object):
 		def index():
 		    return render_template('index.html', app=self)
 
-	def Form(self, in_format = {}, out_format={}):
-
+	def Form(self, _func=None, *, in_format={}, out_format={}):
+		# in_format = options.pop("in_format", None)
+		# out_format = options.pop("out_format", None)
 		def decorator_form(func):
-			self.forms.append(func.__name__)
-			def view_wrapper(*args, **kwargs):
-				return render_template('form.html', fname=func.__name__, sig=inspect.signature(func), helpers=TemplateHelpers, param_format=in_format)
+			print("NOW HERE A ", func)
+			@functools.wraps(func)
+			def decorator_args():
+				print("NOW HERE B")
+				self.forms.append(func.__name__)
+				def view_wrapper():
+					print("NOW HERE C")
+					return render_template('form.html', fname=func.__name__, sig=inspect.signature(func), helpers=TemplateHelpers, param_format=in_format)
 
-			def form_wrapper(*args, **kwargs):
-				return render_template('form.html', fname=func.__name__, sig=inspect.signature(func), helpers=TemplateHelpers, result=func(**request.form))
+				def form_wrapper():
+					print("NOW HERE D", request.form)
 
-			self.app.add_url_rule("/{}".format(func.__name__), view_func=view_wrapper)
-			self.app.add_url_rule("/{}".format(func.__name__), methods=["POST"], view_func=form_wrapper)
-			return func
-		return decorator_form
+					return render_template('form.html', fname=func.__name__, sig=inspect.signature(func), helpers=TemplateHelpers, param_format=in_format, result=func(**request.form))
+
+				self.app.add_url_rule("/{}".format(func.__name__), view_func=view_wrapper)
+				self.app.add_url_rule("/{}".format(func.__name__), methods=["POST"], view_func=form_wrapper)
+
+			print(decorator_args)
+			return decorator_args()
+		
+
+		if _func is None:
+			print("HERE A ", self)
+			return decorator_form
+		else:
+			print("HERE B ", self, _func)
+			return decorator_form(_func)
 
 
             
@@ -49,7 +66,7 @@ class TemplateHelpers(object):
 		if param.annotation is float:
 			return "number"
 		if issubclass(param.annotation, Enum):
-			return "radio"
+			return "select"
 		else:
 			return "text"
 	def default(param):

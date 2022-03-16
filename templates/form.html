@@ -9,6 +9,12 @@
 {% for v in param.annotation %}
 {{radio(param, v.name, v.name == param.default.name)}}
 {% endfor %}
+{% elif helpers.type(param) == "select" %}
+<select name="{{param.name}}" id="{{param.name}}">
+{% for v in param.annotation %}
+{{select(param, v.name)}}
+{% endfor %}
+</select>
 {% else %}
 <input type="{{ helpers.type(param) }}" name="{{ name }}" value="{{ helpers.default(param) }}">
 {% endif %}
@@ -22,6 +28,12 @@
 
 
 {% macro radio(param, value, checked) -%}
-    <input type="radio" id="{{value}}" name="{{value}}" value="{{value}}" {{'checked' if checked else ''}}>
-    <label for="html">{{value}}</label><br>
+    <input type="radio" id="{{value}}" name="{{param.name}}" value="{{value}}" {{'checked' if checked else ''}}>
+    <label for="{{param.name}}">{{value}}</label><br>
+{%- endmacro %}
+
+{% macro select(param, value) -%}
+
+        <option value="{{value}}">{{value}}</option>
+    
 {%- endmacro %}

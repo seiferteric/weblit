@@ -13,7 +13,7 @@ class Planet(Enum):
 
 wapp = Weblit("Weight On The Planets")
 
-@wapp.Form({'planet': Select()})
+@wapp.Form#(in_format={'planet': "select"})
 def weight_on_planet(planet: Planet=Planet.MERCURY, weight_on_earth: float=0) -> float:
 	if isinstance(planet, Planet):
 		return (planet.value/Planet.EARTH.value)*float(weight_on_earth)
